@@ -1,0 +1,17 @@
+{
+   "version": 2,
+   "name": "malnadAqua",
+   "builds": [
+      { 
+        "src": "index.html",
+        "use": "@vercel/node"
+      }
+   ],
+   "routes": [
+    { 
+        "src": "/(.*)",
+         "dest": "/" 
+    }
+   ]
+    
+}

@@ -3,6 +3,7 @@
 <head>
     <title>Billing Form</title>
   
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 
     <style>
@@ -96,11 +97,8 @@
                                         <p>001-234-5678</p>
                                     </div>
                                 </div>
-                                <!-- end col -->
-                                <!-- ♦ -->
-                                <!-- end col -->
+                               
                             </div>
-                            <!-- end row -->
 
                             <div class="py-2">
                                 <h5 class="font-size-15">Order Summary</h5>
@@ -117,7 +115,7 @@
                                             </tr>
                                         </thead>
                                         <tbody id="billTable">
-                                            <!-- Bill items will be added here -->
+                                      
                                         </tbody>
                                     </table>
                                 </div><!-- end table responsive -->
@@ -168,9 +166,22 @@
             document.getElementById('billContent').style.display = 'block';
         }
         function generatePDF() {
-  var pdfObject = jsPDFInvoiceTemplate.default(props);
-  console.log(pdfObject, "pdf file");
+  // Create a new jsPDF instance
+  const doc = new jsPDF();
+
+  // Get the HTML content of the billContent element
+  const element = document.getElementById('billContent');
+  const html = element.innerHTML;
+
+  // Generate the PDF from the HTML content
+  doc.html(html, {
+    callback: function (doc) {
+      // Save the PDF document
+      doc.save('bill.pdf');
+    }
+  });
 }
+
 
 var props = {
     outputType: jsPDFInvoiceTemplate.OutputType.Save,
