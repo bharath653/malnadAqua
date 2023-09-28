@@ -3,7 +3,16 @@
 <head>
     <title>Billing Form</title>
  
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+    <script src=
+"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+	</script>
+	<script src=
+"https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
+	</script>
+	<script src=
+"https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
+	</script>
+  
 
 
     <style>
@@ -128,7 +137,7 @@
         </div>
     </div>
     <div class="text-center mt-4">
-        <button onclick="generatePDF()" class="btn btn-primary">Send to WhatsApp in PDF format</button>
+        <button onclick="convertHTMLtoPDF()" class="btn btn-primary">Send to WhatsApp in PDF format</button>
     </div>
     <script src="https://unpkg.com/jspdf-invoice-template@1.4.0/dist/index.js"></script>
     <script>
@@ -165,13 +174,25 @@
             // Show the bill content
             document.getElementById('billContent').style.display = 'block';
         }
-        function generatePDF() {
-      const { jsPDF } = window.jspdf;
-      var doc = new jsPDF();
-      // PDF generation code
-      doc.text('Hello world!', 10, 10);
-      doc.save('sample.pdf');
-    }
+    
+    
+
+        function convertHTMLtoPDF() {
+			const { jsPDF } = window.jspdf;
+
+			let doc = new jsPDF('l', 'mm', [1600, 1400]);
+			let pdfjs = document.querySelector('#billContent');
+
+			doc.html(pdfjs, {
+				callback: function(doc) {
+					doc.save("newpdf.pdf");
+				},
+				x: 500,
+				y: 12
+			});			
+		}		
+
+
 
 
 // var props = {
