@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Billing Form</title>
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+    <style>
+        /* Add your custom CSS styles here */
+        body {
+            margin-top: 20px;
+            background-color: #eee;
+        }
+
+        .card {
+            box-shadow: 0 20px 27px 0 rgb(0 0 0 / 5%);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            word-wrap: break-word;
+            background-color: #fff;
+            background-clip: border-box;
+            border: 0 solid rgba(0,0,0,.125);
+            border-radius: 1rem;
+            padding: 10px;
+        }
+
+        .invoice-title {
+            text-align: center;
+        }
+
+        .table-bordered {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .table-bordered th {
+            background-color: #f5f5f5;
+        }
+
+        .text-end {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+   
+    <h1 class="invoice-title">Billing Form</h1>
+
+    <form id="billingForm">
+        <input type="text" name="slno" placeholder="SL No.">
+        <input type="text" name="item" placeholder="Item">
+        <input type="number" name="quantity" placeholder="Quantity">
+        <input type="number" name="rate" placeholder="Rate">
+        <input type="button" value="Add Item" onclick="addItem()">
+    </form>
+
+    <div id="billContent" style="display: none;padding: 10px;">
+        <div class="container" style="padding: 10px;">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="invoice-title">
+                                <h4 class="float-end font-size-15">Invoice #DS0204 <span class="badge bg-success font-size-12 ms-2">Paid</span></h4>
+                                <div class="mb-4">
+                                    <h2 class="mb-1 text-muted">Bootdey.com</h2>
+                                </div>
+                                <div class="text-muted">
+                                    <p class="mb-1">3184 Spruce Drive Pittsburgh, PA 15201</p>
+                                    <p class="mb-1"><i class="uil uil-envelope-alt me-1"></i> xyz@987.com</p>
+                                    <p><i class="uil uil-phone me-1"></i> 012-345-6789</p>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="text-muted">
+                                        <h5 class="font-size-16 mb-3">Billed To:</h5>
+                                        <h5 class="font-size-15 mb-2">Preston Miller</h5>
+                                        <p class="mb-1">4068 Post Avenue Newfolden, MN 56738</p>
+                                        <p class="mb-1">PrestonMiller@armyspy.com</p>
+                                        <p>001-234-5678</p>
+                                    </div>
+                                </div>
+                                <!-- end col -->
+                                <!-- ♦ -->
+                                <!-- end col -->
+                            </div>
+                            <!-- end row -->
+
+                            <div class="py-2">
+                                <h5 class="font-size-15">Order Summary</h5>
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 70px;">No.</th>
+                                                <th>Item</th>
+                                                <th>Price</th>
+                                                <th>Quantity</th>
+                                                <th class="text-end" style="width: 120px;">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="billTable">
+                                            <!-- Bill items will be added here -->
+                                        </tbody>
+                                    </table>
+                                </div><!-- end table responsive -->
+                                <div id="totalAmount" class="text-end">Total Amount: $0.00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- end col -->
+            </div>
+        </div>
+    </div>
+    <div class="text-center mt-4">
+        <button onclick="generatePDF()" class="btn btn-primary">Send to WhatsApp in PDF format</button>
+    </div>
+    <script src="https://unpkg.com/jspdf-invoice-template@1.4.0/dist/index.js"></script>
+    <script>
+        let totalAmount = 0;
+
+        function addItem() {
+            const slno = document.getElementById('billingForm').slno.value;
+            const item = document.getElementById('billingForm').item.value;
+            const quantity = parseFloat(document.getElementById('billingForm').quantity.value);
+            const rate = parseFloat(document.getElementById('billingForm').rate.value);
+            const amount = quantity * rate;
+
+            // Create a new row in the bill table
+            const table = document.getElementById('billTable');
+            const newRow = table.insertRow(-1);
+            const cell1 = newRow.insertCell(0);
+            const cell2 = newRow.insertCell(1);
+            const cell3 = newRow.insertCell(2);
+            const cell4 = newRow.insertCell(3);
+            const cell5 = newRow.insertCell(4);
+
+            cell1.innerHTML = slno;
+            cell2.innerHTML = item;
+            cell3.innerHTML = `$${rate.toFixed(2)}`;
+            cell4.innerHTML = quantity;
+            cell5.innerHTML = `$${amount.toFixed(2)}`;
+
+            totalAmount += amount;
+            document.getElementById('totalAmount').textContent = `Total Amount: $${totalAmount.toFixed(2)}`;
+
+            // Clear the form
+            document.getElementById('billingForm').reset();
+
+            // Show the bill content
+            document.getElementById('billContent').style.display = 'block';
+        }
+        function generatePDF() {
+  var pdfObject = jsPDFInvoiceTemplate.default(props);
+  console.log(pdfObject, "pdf file");
+}
+
+var props = {
+    outputType: jsPDFInvoiceTemplate.OutputType.Save,
+    returnJsPDFDocObject: true,
+    fileName: "Invoice 2021",
+    orientationLandscape: false,
+    compress: true,
+  element: document.getElementById("billContent"),
+};
+
+    </script>
+</body>
+</html>
